@@ -9,7 +9,17 @@ TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 # Gemini configuration
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash")
+
+# Check available models (temporary for debugging)
+def check_available_models():
+    try:
+        models = genai.list_models()
+        print("Available models:", models)
+    except Exception as e:
+        print("Error listing models:", e)
+
+# Call model list on startup
+check_available_models()
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("হাই! আমি 🤖 BotBhai — এখন Gemini দ্বারা চালিত! ✨")
@@ -19,6 +29,8 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🧠 ভাবছি...")
 
     try:
+        # Use a valid model for the chat (replace with correct model)
+        model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(user_message)
         reply = response.text
         await update.message.reply_text(reply)
