@@ -29,9 +29,11 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🧠 ভাবছি...")
 
     try:
-        # Use the correct method (generate_content or chat) based on the available models
-        response = genai.chat(messages=[{"role": "user", "content": user_message}])
-        reply = response["content"]
+        # Use generate_content for chat with Gemini
+        response = genai.generate_content(
+            prompt=user_message
+        )
+        reply = response.text
         await update.message.reply_text(reply)
 
     except Exception as e:
