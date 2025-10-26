@@ -29,12 +29,9 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🧠 ভাবছি...")
 
     try:
-        # Use a valid model for the chat (replace with correct model)
-        response = genai.generate_text(
-            model="gemini-1.5",  # Use a valid model name from available models list
-            prompt=user_message
-        )
-        reply = response.text
+        # Use the correct method (generate_content or chat) based on the available models
+        response = genai.chat(messages=[{"role": "user", "content": user_message}])
+        reply = response["content"]
         await update.message.reply_text(reply)
 
     except Exception as e:
