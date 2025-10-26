@@ -1,20 +1,13 @@
 import os
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
-from openai import OpenAI
+import openai
 
-# API key এবং Telegram token
+# Environment Variables
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
-# সেফটি চেক (ডিবাগিং এর জন্য)
-if not OPENAI_API_KEY:
-    print("❌ OPENAI_API_KEY missing!")
-if not TELEGRAM_TOKEN:
-    print("❌ TELEGRAM_TOKEN missing!")
-
-# OpenAI ক্লায়েন্ট
-client = OpenAI(api_key=OPENAI_API_KEY)
+openai.api_key = OPENAI_API_KEY
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("হাই! আমি 🤖 BotBhai — তোমার ChatGPT powered বন্ধু!")
@@ -24,14 +17,14 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🧠 ভাবছি...")
 
     try:
-        response = client.chat.completions.create(
+        completion = openai.ChatCompletion.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "You are BotBhai, a friendly Bengali ChatGPT assistant."},
+                {"role": "system", "content": "তুমি BotBhai, একজন বন্ধুসুলভ বাংলা ChatGPT সহকারী।"},
                 {"role": "user", "content": user_message}
             ]
         )
-        reply = response.choices[0].message.content
+        reply = completion.choices[0].message["content"]
         await update.message.reply_text(reply)
 
     except Exception as e:
